@@ -1,0 +1,77 @@
+services:
+  redis:
+    container_name: da-redis
+    image: redis:latest
+    ports:
+      - "5555:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --save 60 1 --loglevel warning
+    restart: unless-stopped
+    networks:
+      - ad-network
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  postgres:
+    container_name: da-postgress
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: emergency_notification
+      POSTGRES_PASSWORD: emergency_notification
+      POSTGRES_DB: emergency_notification
+      PGDATA: /var/lib/postgresql/data
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - ad-network
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U emergency_notification" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
+
+  kafka:
+    container_name: da-kafka
+    image: bitnami/kafka:latest
+    ports:
+      - "9092:9092"
+    volumes:
+      - "kafka_data:/bitnami"
+    environment:
+      # KRaft settings
+      - KAFKA_CFG_NODE_ID=0
+      - KAFKA_CFG_PROCESS_ROLES=controller,broker
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@kafka:9093
+      # Listeners
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://:9092
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=PLAINTEXT
+    networks:
+      - ad-network
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "kafka-topics.sh", "--list", "--bootstrap-server=localhost:9092" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 20s
+
+networks:
+  ad-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  kafka_data:
+  redis_data:
