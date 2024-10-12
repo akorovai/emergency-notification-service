@@ -75,3 +75,5 @@ volumes:
   postgres_data:
   kafka_data:
   redis_data:
+
+    error
