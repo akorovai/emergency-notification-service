@@ -19,7 +19,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
                         request ->
-                                request.requestMatchers("/", "/login", "/oauth2/**")
+                                request.requestMatchers("/", "/login", "/oauth2/**", "/eureka/**")
                                         .permitAll()
                                         .anyRequest().authenticated())
                 .oauth2Login(Customizer.withDefaults())
