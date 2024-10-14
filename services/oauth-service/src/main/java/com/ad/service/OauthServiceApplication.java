@@ -2,14 +2,14 @@ package com.ad.service;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.config.server.EnableConfigServer;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 @SpringBootApplication
-@EnableConfigServer
-public class ConfigServiceApplication {
+@EnableDiscoveryClient
+public class OauthServiceApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(ConfigServiceApplication.class, args);
+		SpringApplication.run(OauthServiceApplication.class, args);
 	}
 
 }

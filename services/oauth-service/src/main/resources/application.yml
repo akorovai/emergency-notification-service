@@ -1,0 +1,15 @@
+spring:
+  config:
+    import: optional:configserver:http://localhost:8888
+  application:
+    name: oauth-service
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${CLIENT-ID}
+            client-secret: ${CLIENT-SECRET}
+            scope:
+              - email
+              - profile
