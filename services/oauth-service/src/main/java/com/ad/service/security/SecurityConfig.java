@@ -1,5 +1,6 @@
 package com.ad.service.security;
 
+import com.ad.service.user.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -29,6 +30,7 @@ public class SecurityConfig {
                     request.requestMatchers("/", "/login", "/oauth2/**",
                                     "/api/auth/**")
                             .permitAll()
+                            .requestMatchers("/api/sec").hasRole(Role.USER.getRoleName())
                             .anyRequest().authenticated();
                 })
                 .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))

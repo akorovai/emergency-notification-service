@@ -2,22 +2,27 @@ package com.ad.service.auth;
 
 import com.ad.service.auth.request.LoginRequest;
 import com.ad.service.auth.request.RegisterRequest;
+import com.ad.service.handler.BadRefreshTokenException;
+import com.ad.service.handler.ExistingUserException;
 import com.ad.service.refresh_token.RefreshToken;
 import com.ad.service.security.JwtService;
+import com.ad.service.user.Role;
 import com.ad.service.user.User;
 import com.ad.service.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Map;
+import java.util.Set;
 
 @Slf4j
 @Service
@@ -29,6 +34,9 @@ public class AuthService {
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
 
+    @Value("${application.security.jwt.refresh-token.expiration}")
+    private long refreshTokenExpiration;
+
     @Transactional
     public String register(RegisterRequest request) {
         log.info("Starting registration process for user with username: {} and email: {}", request.getUsername(), request.getEmail());
@@ -38,6 +46,7 @@ public class AuthService {
                 .builder()
                 .username(request.getUsername())
                 .email(request.getEmail())
+                .roles(Set.of(Role.USER.getRoleName()))
                 .password(passwordEncoder.encode(request.getPassword()))
                 .build();
         log.info("New user created with nickname: {}", user.getUsername());
@@ -66,7 +75,7 @@ public class AuthService {
         var claims = createClaims(user);
 
         var accessToken = jwtService.generateToken(claims, user);
-        var refreshToken = RefreshToken.generateToken();
+        var refreshToken = RefreshToken.generateToken(refreshTokenExpiration);
 
         user.setRefreshToken(refreshToken);
         userRepository.save(user);
@@ -86,8 +95,16 @@ public class AuthService {
     private void checkForExistingUser(String username, String email) {
         userRepository.findUserByUsernameOrEmail(username, email)
                 .ifPresent((u) -> {
-                    throw new BadCredentialsException("Test error.");
+                    throw new ExistingUserException("User with such username/email already exists.");
                 });
     }
 
+    public String renewAccessToken(String refreshToken) {
+        var user = userRepository.findByNotExpiredRefreshToken(refreshToken, LocalDateTime.now())
+                .orElseThrow(() -> new BadRefreshTokenException("Wrong refresh token."));
+
+        var claims = createClaims(user);
+
+        return jwtService.generateToken(claims, user);
+    }
 }

@@ -58,8 +58,9 @@ public class JwtFilter extends OncePerRequestFilter {
         return request.getServletPath().contains("/api/auth");
     }
 
-    private void authenticateUser(String userEmail, String jwt, HttpServletRequest request) {
-        UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
+    private void authenticateUser(String username, String jwt, HttpServletRequest request) {
+        UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
+        System.out.println(jwtService.isTokenValid(jwt, userDetails));
         if (jwtService.isTokenValid(jwt, userDetails)) {
             UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                     userDetails,
@@ -71,5 +72,6 @@ public class JwtFilter extends OncePerRequestFilter {
             );
             SecurityContextHolder.getContext().setAuthentication(authToken);
         }
+        System.out.println(SecurityContextHolder.getContext().getAuthentication());
     }
 }
