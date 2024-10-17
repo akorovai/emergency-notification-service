@@ -3,6 +3,7 @@ package com.ad.service.auth;
 import com.ad.service.auth.request.LoginRequest;
 import com.ad.service.auth.request.RegisterRequest;
 import jakarta.validation.Valid;
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,10 +18,13 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/register")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<String> register(@RequestBody @Valid RegisterRequest request) {
-        var res = authService.register(request);
-        return ResponseEntity.ok(res);
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<DefaultResponse> register(@RequestBody @Valid RegisterRequest request) {
+        var res = DefaultResponse.builder()
+                .code(HttpStatus.CREATED.value())
+                .message(authService.register(request))
+                .build();
+        return ResponseEntity.ok().body(res);
     }
 
     @PostMapping("/login")
@@ -30,11 +34,17 @@ public class AuthController {
         return ResponseEntity.ok().body(res);
     }
 
-    @GetMapping("/refresh-jwt")
+    @PostMapping("/refresh-jwt")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<String> getNewToken(@RequestParam(name = "refresh-token") String refreshToken) {
-        var res = authService.renewAccessToken(refreshToken);
+    public ResponseEntity<DefaultResponse> getNewToken(@RequestParam(name = "refresh-token") String refreshToken) {
+        var res = DefaultResponse.builder()
+                .code(HttpStatus.OK.value())
+                .message(authService.renewAccessToken(refreshToken))
+                .build();
         return ResponseEntity.ok().body(res);
     }
 
+    @Builder
+    public record DefaultResponse(int code, String message) {
+    }
 }
