@@ -68,15 +68,21 @@ services:
       start_period: 20s
 
   mongo:
-    image: ad-mongo
+    container_name: ad-mongo
+    image: mongo:latest
     restart: unless-stopped
+    ports:
+      - "27017:27017"
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_ROOT_USERNAME: ad_users
+      MONGO_INITDB_ROOT_PASSWORD: ad_users
+    volumes:
+      - mongo-data:/data/db
+    command: [ "mongod", "--config", "/etc/mongod.conf" ]
     networks:
       - ad-network
     healthcheck:
-      test: [ "CMD", "mongo", "--eval", "db.adminCommand('ping')" ]
+      test: [ "CMD","mongosh", "--eval", "db.adminCommand('ping')" ]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -89,4 +95,5 @@ volumes:
   postgres_data:
   kafka_data:
   redis_data:
+  mongo-data:
 
