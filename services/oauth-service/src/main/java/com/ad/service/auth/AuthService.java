@@ -5,7 +5,7 @@ import com.ad.service.auth.request.RegisterRequest;
 import com.ad.service.handler.BadRefreshTokenException;
 import com.ad.service.handler.ExistingUserException;
 import com.ad.service.refresh_token.RefreshToken;
-import com.ad.service.security.JwtService;
+import com.ad.service.security.jwt.JwtService;
 import com.ad.service.user.Role;
 import com.ad.service.user.User;
 import com.ad.service.user.UserRepository;

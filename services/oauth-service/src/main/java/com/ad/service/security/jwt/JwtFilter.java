@@ -1,4 +1,4 @@
-package com.ad.service.security;
+package com.ad.service.security.jwt;
 
 
 import jakarta.servlet.FilterChain;

@@ -1,6 +1,7 @@
-package com.ad.service.security;
+package com.ad.service.security.oauth;
 
 import com.ad.service.refresh_token.RefreshToken;
+import com.ad.service.security.jwt.JwtService;
 import com.ad.service.user.User;
 import com.ad.service.user.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;

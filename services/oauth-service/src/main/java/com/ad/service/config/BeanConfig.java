@@ -1,7 +1,7 @@
 package com.ad.service.config;
 
-import com.ad.service.security.JwtService;
-import com.ad.service.security.OAuth2SuccessHandler;
+import com.ad.service.security.jwt.JwtService;
+import com.ad.service.security.oauth.OAuth2SuccessHandler;
 import com.ad.service.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
