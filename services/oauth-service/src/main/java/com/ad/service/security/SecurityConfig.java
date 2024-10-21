@@ -20,6 +20,7 @@ public class SecurityConfig {
 
     private final AuthenticationProvider authenticationProvider;
     private final JwtFilter jwtFilter;
+    private final OAuth2SuccessHandler successHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -34,7 +35,10 @@ public class SecurityConfig {
                             .anyRequest().authenticated();
                 })
                 .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
-//                .oauth2Login(Customizer.withDefaults())
+                .oauth2Login(oauth2Login ->
+                        oauth2Login
+                                .successHandler(successHandler)
+                )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .authenticationProvider(authenticationProvider);
 

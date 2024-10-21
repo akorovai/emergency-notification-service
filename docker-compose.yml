@@ -78,7 +78,6 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: ad_users
     volumes:
       - mongo-data:/data/db
-    command: [ "mongod", "--config", "/etc/mongod.conf" ]
     networks:
       - ad-network
     healthcheck:

@@ -1,5 +1,8 @@
 package com.ad.service.config;
 
+import com.ad.service.security.JwtService;
+import com.ad.service.security.OAuth2SuccessHandler;
+import com.ad.service.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -17,6 +20,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class BeanConfig {
 
     private final UserDetailsService userDetailsService;
+    private final JwtService jwtService;
+    private final UserRepository userRepository;
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
@@ -37,4 +42,8 @@ public class BeanConfig {
         return new BCryptPasswordEncoder(12);
     }
 
+    @Bean
+    public OAuth2SuccessHandler customOAuth2SuccessHandler() {
+        return new OAuth2SuccessHandler(jwtService, userRepository);
+    }
 }
