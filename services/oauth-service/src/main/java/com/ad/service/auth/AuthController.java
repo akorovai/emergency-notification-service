@@ -6,10 +6,9 @@ import jakarta.validation.Valid;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -18,6 +17,9 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthService authService;
+
+    @Value("${spring.security.oauth2.client.registration.google.client-id}")
+    private String googleClientId;
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
@@ -44,6 +46,13 @@ public class AuthController {
                 .message(authService.renewAccessToken(refreshToken))
                 .build();
         return ResponseEntity.ok().body(res);
+    }
+
+    @GetMapping("/oauth2/authorization/google")
+    public String redirectToGoogleLogin() {
+        return "redirect:https://accounts.google.com/o/oauth2/auth?client_id=" + googleClientId
+                + "&redirect_uri=http://localhost:8762/login/oauth2/code/google&response_type=code&scope=email profile" +
+                "&access_type=offline";
     }
 
     @Builder

@@ -1,0 +1,5 @@
+server:
+  port: 8763
+
+links:
+  google-auth: "http://localhost:8762/oauth2/authorization/google"
