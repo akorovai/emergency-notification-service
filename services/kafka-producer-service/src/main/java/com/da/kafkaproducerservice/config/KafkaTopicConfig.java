@@ -12,10 +12,14 @@ public class KafkaTopicConfig {
     @Value("${spring.kafka.topic.name}")
     private String topic;
 
+    @Value("${spring.kafka.topic.partitions}")
+    private Integer partitions;
+
     @Bean
     public NewTopic topic(){
         return TopicBuilder
                 .name(topic)
+                .partitions(partitions)
                 .build();
     }
 

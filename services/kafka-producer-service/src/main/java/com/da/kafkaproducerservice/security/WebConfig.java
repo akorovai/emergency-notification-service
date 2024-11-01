@@ -1,4 +1,4 @@
-package security;
+package com.da.kafkaproducerservice.security;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
