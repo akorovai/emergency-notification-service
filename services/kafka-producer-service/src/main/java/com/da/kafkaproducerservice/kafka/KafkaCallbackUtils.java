@@ -8,7 +8,7 @@ import java.util.function.BiConsumer;
 
 @Slf4j
 public class KafkaCallbackUtils {
-    public static <V> BiConsumer<SendResult<String, String>, Throwable> createKafkaCallback(String topic, String payload) {
+    public static BiConsumer<SendResult<String, String>, Throwable> createKafkaCallback(String topic, String payload) {
         return (result, ex) -> {
             if (ex != null) {
                 log.error("Failed to send message to topic: {}. Payload: {}", topic, payload, ex);
