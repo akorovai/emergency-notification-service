@@ -30,6 +30,7 @@ public class User implements Serializable, UserDetails, Principal {
     private String email;
     private String password;
     private RefreshToken refreshToken;
+    @Builder.Default
     private Set<String> roles = new HashSet<>();
 
     @Override

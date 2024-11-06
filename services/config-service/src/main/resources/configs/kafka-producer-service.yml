@@ -3,10 +3,10 @@ spring:
     producer:
       bootstrap-servers: localhost:9092
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      value-serializer: com.da.kafkaproducerservice.serializer.EmailMessageSerializer
     topic:
       name: "main-topic"
       partitions: 6
 
 server:
-  port: 8763
+  port: 8765

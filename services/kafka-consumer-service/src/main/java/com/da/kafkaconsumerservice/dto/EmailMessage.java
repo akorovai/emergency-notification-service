@@ -1,6 +1,5 @@
-package com.da.kafkaproducerservice.dto;
+package com.da.kafkaconsumerservice.dto;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,8 +9,8 @@ import java.util.List;
 
 @Builder
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 public class EmailMessage {
 
     private String id;
